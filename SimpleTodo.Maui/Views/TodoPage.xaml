@@ -1,0 +1,76 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:SimpleTodo.Maui.ViewModels"
+             xmlns:models="clr-namespace:SimpleTodo.Maui.Models"
+             x:DataType="vm:TodoViewModel"
+             x:Class="SimpleTodo.Maui.Views.TodoPage"
+             Title="To-Do List">
+
+    <StackLayout Padding="10">
+        <Button x:Name="AddButton" Text="Add" Clicked="OnAddTodoClicked"></Button>
+
+        <Picker Title="Filter"
+        VerticalOptions="Start"
+        SelectedItem="{Binding SelectedFilter, Mode=TwoWay}">
+            <Picker.ItemsSource>
+                <x:Array Type="{x:Type vm:FilterOptions}">
+                    <vm:FilterOptions>All</vm:FilterOptions>
+                    <vm:FilterOptions>Completed</vm:FilterOptions>
+                    <vm:FilterOptions>Incomplete</vm:FilterOptions>
+                </x:Array>
+            </Picker.ItemsSource>
+        </Picker>
+
+
+        <ListView ItemsSource="{Binding TodoItems}">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="models:TodoItem">
+                    <ViewCell>
+                        <StackLayout Orientation="Horizontal" Padding="5">
+                            <StackLayout HorizontalOptions="StartAndExpand">
+                                <Label Text="{Binding Title}" />
+                                <Label Text="{Binding Description}" />
+                            </StackLayout>
+
+                            <Button
+                                Text="{Binding IsCompleted, Converter={StaticResource BooleanToTextConverter}, ConverterParameter='Mark as Open,Mark as Done'}"
+                                CommandParameter="{Binding .}"
+                                Clicked="OnToggleCompletionClicked"
+                                BackgroundColor="#EAEFCC"
+                                BorderColor="Black"
+                                TextColor="black"
+                                Padding="0"
+                                Margin="5"
+                                WidthRequest="100"
+                                HeightRequest="40" />
+
+
+                            <ImageButton
+                                Source="edit_icon.png" 
+                                CommandParameter="{Binding .}"
+                                Clicked="OnEditTodoClicked"
+                                BackgroundColor="Transparent"
+                                BorderColor="Transparent"
+                                Padding="0"
+                                WidthRequest="24"
+                                HeightRequest="24" />
+
+
+                                <!-- Delete button with icon -->
+                            <ImageButton
+                                Source="delete_icon.png" 
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TodoViewModel}}, Path=DeleteTodoCommand}"
+                                CommandParameter="{Binding .}"
+                                BackgroundColor="Transparent"
+                                BorderColor="Transparent"
+                                Padding="0"
+                                WidthRequest="24"
+                                HeightRequest="24"
+                                VerticalOptions="Center" />
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackLayout>
+</ContentPage>
